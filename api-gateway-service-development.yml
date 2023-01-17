@@ -1,0 +1,27 @@
+server:
+  port: 8081
+
+spring:
+  main:
+    web-application-type: reactive
+  cloud:
+    gateway:
+      routes:
+        - id: partner-service
+          uri: lb://partner-service # load balancer
+          predicates:
+            - Path=/api/v1/partner/**,/api/v2/partner/**
+          filters:
+            - RewritePath=/partner/(?<path>.*), /$\{path}
+
+        - id: storage-service
+          uri: lb://storage-service # load balancer
+          predicates:
+            - Path=/api/v1/storage/**,/api/v2/storage/**
+          filters:
+            - RewritePath=/storage/(?<path>.*), /$\{path}
+logging:
+  level:
+    root: info
+    org.springframework.cloud.gateway.route.RouteDefinitionRouteLocator: INFO
+    org.springframework.cloud.gateway: TRACE
