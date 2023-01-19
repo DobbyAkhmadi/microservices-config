@@ -13,6 +13,10 @@ spring:
             - Path=/api/v1/partner/**,/api/v2/partner/**
           filters:
             - RewritePath=/partner/(?<path>.*), /$\{path}
+        - name: RequestRateLimiter
+            args:
+              redis-rate-limiter.replenishRate: 10
+              redis-rate-limiter.burstCapacity: 20
 
         - id: storage-service
           uri: lb://storage-service # load balancer
@@ -20,6 +24,11 @@ spring:
             - Path=/api/v1/storage/**,/api/v2/storage/**
           filters:
             - RewritePath=/storage/(?<path>.*), /$\{path}
+        - name: RequestRateLimiter
+            args:
+              redis-rate-limiter.replenishRate: 10
+              redis-rate-limiter.burstCapacity: 20
+           
 logging:
   level:
     root: info
